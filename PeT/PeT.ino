@@ -5,34 +5,31 @@ LiquidCrystal lcd(7,8,9,10,11,12);
 //Il ritardo tra ogni pressione del pulsante
 int delayBetweenSkip = 250;
 
-//Il massimo raggiungibile dalle bank
-int songId_max = 13;
 
 //VARIABILI BANK
-String bank[] = {
-  "ZOOTV",
-  "Classic"
+String bankManager[][13]{
+  {
+    "Zoo Station",
+    "The Fly",
+    "Mysterious Ways",
+    "MW Delay",
+    "Until...World",
+    "Satellite of Love",
+    "Bullet...Sky",
+    "Where...Name",
+    "Pride",
+    "With You",
+    "Love...Blind",
+    "Love...Blind - BOOST",
+    "Can't falling in love"
+  },
+  {
+    "Strat",
+    "Metal"
+  }
 };
 int bank_i = 0;
-////////////////////////////
-String songId[] = {
-  "Zoo Station",
-  "The Fly",
-  "Mysterious ways",
-  "MW-Delay",
-  "Until..world",
-  "Until..world - dist",
-  "Satellite..Love",
-  "Bullet the blue sky",
-  "Running to Stand Still",
-  "Where ... Name",
-  "Pride",
-  "With or Without You",
-  "Love..,Blind",
-  "Love...Blind BOOST"
-};
 int songId_i = 0;
-/////////////////////////////
 
 //VOID
 void setup() {
@@ -44,28 +41,52 @@ void setup() {
 }
 
 void loop() {
+  //Costante
+  bankManager[bank_i][songId_i];
 
+  //Bank
   lcd.setCursor(0, 0);
-  lcd.print(bank[bank_i]);
-  lcd.setCursor(0, 1);
-  lcd.print(songId[songId_i]);
+  lcd.print("BANK");
 
-  //Numerino
+  lcd.setCursor(5, 0);
+  lcd.print(bank_i);
+
+  //Song
+  lcd.setCursor(9, 0);
+  lcd.print("TONE");
+
   lcd.setCursor(14, 0);
   lcd.print(songId_i);
 
-  if (digitalRead(3)==HIGH){
-    goRight();
+  lcd.setCursor(0, 1);
+  lcd.print(bankManager[bank_i][songId_i]);
+
+
+
+  //digitalRead
+  if (digitalRead(2)==HIGH){
+    goDown();
     lcd.clear();
   }
-  else if (digitalRead(2)==HIGH){
+  else if (digitalRead(3)==HIGH){
+    goUp();
+    lcd.clear();
+  }
+  else if (digitalRead(4)==HIGH){
     goLeft();
+    lcd.clear();
+  }
+  else if (digitalRead(5)==HIGH){
+    goRight();
     lcd.clear();
   }
   else{}
 
   //Assicura che ogni libreria non vada fuori limite (0< o > max), e ritorna a 0
-  if (songId_i > songId_max || songId_i<0){
+  if (bank_i > sizeof(bankManager)/sizeof(bankManager[0])-1 || bank_i<0){
+    bank_i = 0;
+  }
+  if (songId_i > sizeof(bankManager[0])/sizeof(bankManager[0][0]) || songId_i<0){
     songId_i = 0;
   }
 }
@@ -77,5 +98,15 @@ void goRight(){
 
 void goLeft(){
   songId_i--;
+  delay(delayBetweenSkip);
+}
+
+void goUp(){
+  bank_i++;
+  delay(delayBetweenSkip);
+}
+
+void goDown(){
+  bank_i--;
   delay(delayBetweenSkip);
 }
